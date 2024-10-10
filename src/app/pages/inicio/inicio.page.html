@@ -1,0 +1,129 @@
+
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Quiz de Teoría Musical</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="loginUsuario && mostrarBienvenida">
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Bienvenido, {{ loginUsuario }}!</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  
+
+
+<ion-content class="ion-padding">
+
+  <!-- Bloque para seleccionar estilo musical -->
+  <ng-container *ngIf="!selectedSection && !quizFinished">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Selecciona un estilo musical</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button *ngFor="let section of quizSections" expand="block" (click)="selectSection(section.name)" class="ion-margin-bottom">
+          {{ section.name }}
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <!-- Bloque para seleccionar dificultad -->
+  <ng-container *ngIf="selectedSection && !selectedDifficulty && !quizFinished">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Selecciona la dificultad</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" (click)="selectDifficulty('easy')" color="success" class="ion-margin-bottom">Fácil</ion-button>
+        <ion-button expand="block" (click)="selectDifficulty('medium')" color="warning" class="ion-margin-bottom">Medio</ion-button>
+        <ion-button expand="block" (click)="selectDifficulty('hard')" color="danger" class="ion-margin-bottom">Difícil</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <!-- Bloque para confirmar inicio del quiz -->
+  <ng-container *ngIf="selectedDifficulty && !quizStarted && !quizFinished">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">¿Listo para comenzar?</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" (click)="startQuiz()" color="tertiary">Iniciar Quiz</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <!-- Bloque para el quiz activo -->
+  <ng-container *ngIf="quizStarted && !quizFinished">
+    <ion-card>
+      <ion-card-header color="light">
+        <ion-card-subtitle>{{ selectedSection }} - {{ selectedDifficulty }}</ion-card-subtitle>
+        <ion-card-title class="ion-text-center">Pregunta {{ currentQuestion + 1 }} de {{ currentQuestions.length }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h2 class="ion-text-center ion-margin-bottom">{{ currentQuestions[currentQuestion].question }}</h2>
+        <ion-radio-group [(ngModel)]="userAnswers[currentQuestion]">
+          <ion-item *ngFor="let option of currentQuestions[currentQuestion].options; let i = index">
+            <ion-label>{{ option }}</ion-label>
+            <ion-radio slot="start" [value]="i"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="ion-text-center ion-margin-vertical">
+      <ion-button (click)="goBack()" [disabled]="currentQuestion === 0" fill="outline">
+        <ion-icon name="arrow-back-outline" slot="start"></ion-icon>
+        Anterior
+      </ion-button>
+      <ion-button (click)="nextQuestion()" [disabled]="currentQuestion === currentQuestions.length - 1" fill="outline">
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        Siguiente
+      </ion-button>
+      <ion-button (click)="endQuiz()" *ngIf="currentQuestion === currentQuestions.length - 1" color="success">
+        Terminar
+      </ion-button>
+      <ion-button (click)="restartQuiz()" color="danger" fill="outline">
+        <ion-icon name="refresh-outline" slot="start"></ion-icon>
+        Reiniciar
+      </ion-button>
+    </div>
+
+    <ion-card>
+      <ion-card-content class="ion-text-center">
+        <ion-text color="medium">Tiempo transcurrido: {{ formatTime(timer) }}</ion-text>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <!-- Bloque para mostrar resultados del quiz -->
+  <ng-container *ngIf="quizFinished">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">{{ resultMessage }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <h2 class="ion-text-center">Te demoraste: {{ formatTime(totalTime) }}</h2>
+        <ion-list class="ion-margin-top">
+          <ion-item *ngFor="let incorrect of incorrectAnswers">
+            <ion-label>
+              <h3>{{ incorrect.question }}</h3>
+              <p>Tu respuesta: {{ incorrect.userAnswer }}</p>
+              <p>Respuesta correcta: {{ incorrect.correctAnswer }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <ion-button (click)="restartQuiz()" color="primary" class="ion-margin-top" expand="block">Volver al inicio</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+</ion-content>

@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="!playingTrack">Buscador de Canciones</ion-title>
+    <ion-title *ngIf="playingTrack">Reproduciendo Canción</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="!playingTrack; else songPlayer">
+    <div class="search-container">
+      <ion-item class="search-bar">
+        <ion-label position="floating">Nombre de la canción</ion-label>
+        <ion-input [(ngModel)]="songName" placeholder="Escribe el nombre de la canción"></ion-input>
+      </ion-item>
+
+      <ion-button expand="full" color="primary" (click)="searchSong()">Buscar</ion-button>
+    </div>
+
+    <ion-list *ngIf="trackResults.length > 0">
+      <ion-item *ngFor="let track of trackResults">
+        <ion-thumbnail slot="start">
+          <img [src]="track.album.images[0]?.url" alt="Imagen del álbum">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ track.name }}</h2>
+          <p>{{ track.artists[0]?.name }}</p>
+        </ion-label>
+        <ion-button fill="clear" color="success" (click)="playPreview(track)">
+          <ion-icon name="play-circle"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <ng-template #songPlayer>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ playingTrack.name }}</ion-card-title>
+        <p>{{ playingTrack.artist }}</p>
+      </ion-card-header>
+      <ion-card-content>
+        <img [src]="playingTrack.albumImage" alt="Album Image" style="width: 100%; height: auto;">
+        <audio controls [src]="playingTrack.preview_url" autoplay></audio>
+        <ion-button expand="full" color="danger" (click)="stopPlaying()">Volver</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>
