@@ -8,17 +8,25 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
-  loginUsuario: string = '';
-  loginContrasena: string = '';
-  loginEdad: number = 0;
-  loginTelefono: string = '';
+  loginEmail: string = '';
+  loginPassword: string = '';
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   login() {
-    // Guarda los datos del usuario en el servicio
-    this.userService.setUserData(this.loginUsuario, this.loginContrasena, this.loginEdad, this.loginTelefono);
-    // Navegar a la página de perfil
-    this.router.navigate(['/inicio']);
+    // Validar el usuario a través del servicio
+    const isValidUser = this.userService.validateUser(this.loginEmail, this.loginPassword);
+
+    if (isValidUser) {
+      // Redirigir al perfil si las credenciales son correctas
+      this.router.navigate(['/inicio']);
+    } else {
+      // Mostrar mensaje de error si las credenciales son incorrectas
+      alert('Credenciales incorrectas. Inténtalo de nuevo.');
+    }
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']); // Navegar al registro
   }
 }

@@ -1,36 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-configuracion',
   templateUrl: './configuracion.page.html',
   styleUrls: ['./configuracion.page.scss'],
 })
-export class ConfiguracionPage implements OnInit {
+export class ConfiguracionPage {
   userEmail: string = '';
   userPassword: string = '';
   userAge: number = 0;
   userPhone: string = '';
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private userService: UserService, private router: Router) {}
 
-  ngOnInit() {
-    // Obtener los datos del usuario del servicio al cargar la página de configuración
-    const { email, password, age, phone } = this.userService.getUserData();
-    this.userEmail = email;
-    this.userPassword = password;
-    this.userAge = age;
-    this.userPhone = phone;
+  ionViewWillEnter() {
+    // Obtener los datos del usuario y mostrarlos en la configuración
+    const userData = this.userService.getUserData();
+    this.userEmail = userData.email;
+    this.userPassword = userData.password;
+    this.userAge = userData.age;
+    this.userPhone = userData.phone;
   }
 
   logout() {
-    // Limpia los datos del usuario almacenados en el servicio
-    this.userService.setUserData('', '', 0, '');
-
-    // Redirige al usuario a la página de login y recarga el estado para limpiar los datos
-    this.router.navigate(['/login']).then(() => {
-      window.location.reload();
-    });
+    // Limpiar los datos del usuario al cerrar sesión
+    this.userService.logout();
+    this.router.navigate(['/login']);
   }
 }

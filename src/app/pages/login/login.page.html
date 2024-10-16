@@ -8,63 +8,49 @@
   <!-- Imagen de bienvenida -->
   <ion-img src="assets/images/login-image.svg"></ion-img>
 
-  <!-- Tarjeta de bienvenida -->
+  <!-- Tarjeta de inicio de sesión -->
   <ion-card color="primary">
     <ion-card-header>
-      <ion-card-title class="ion-text-center">Bienvenido</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-title class="ion-text-center">Iniciar Sesión</ion-card-title>
+      <ion-card-subtitle class="ion-text-center">Accede a tu cuenta</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
-    </ion-card-content>
-
-    <!-- Lista de campos de entrada -->
-    <ion-list>
-      <ion-item>
-        <ion-input label="Email" type="email" placeholder="email@domain.com" [(ngModel)]="loginUsuario"></ion-input>
-      </ion-item>
+      <!-- Lista de campos de entrada -->
+      <ion-list>
+        <ion-item>
+          <ion-input label="Email" type="email" placeholder="email@domain.com" [(ngModel)]="loginEmail" required></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-input label="Contraseña" type="password" placeholder="********" [(ngModel)]="loginPassword" required></ion-input>
+        </ion-item>
+      </ion-list>
       
-      <ion-item>
-        <ion-input label="Contraseña" type="password" placeholder="********" [(ngModel)]="loginContrasena"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-input label="Edad" type="number" placeholder="000" [(ngModel)]="loginEdad"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-input label="Teléfono" type="tel" placeholder="+569-" [(ngModel)]="loginTelefono"></ion-input>
-      </ion-item>
-    </ion-list>
+      <!-- Botón de Iniciar Sesión -->
+      <ion-button expand="full" id="open-loading" (click)="login()" class="ion-margin-top">Iniciar Sesión</ion-button>
+    </ion-card-content>
   </ion-card>
 
-  <!-- Contenedor para centrar el botón -->
+  <!-- Enlaces adicionales -->
   <ion-grid>
     <ion-row>
-      <ion-col class="ion-text-center" [routerLink]="['/inicio']"> 
-        <ion-button expand="full" id="open-loading" (click)="login()">Iniciar Sesión</ion-button>
+      <ion-col class="ion-text-center">
+        <ion-text>
+          <p [routerLink]="['/recuperar']" class="link">¿Olvidaste tu contraseña?</p>
+        </ion-text>
+        <ion-text class="ion-text-center" (click)="goToRegister()">
+          <p>¿No tienes cuenta? Regístrate aquí</p>
+        </ion-text>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <ion-text class="ion-text-center" [routerLink]="['/recuperar']" >  
-    <p>¿Olvidaste tu contrasena?</p>
-  </ion-text> 
-
   <!-- Indicador de carga -->
   <ion-loading
     trigger="open-loading"
-    message="Cargando..."
+    message="Verificando..."
     [duration]="1000"
     spinner="circles">
   </ion-loading>
-  <ion-grid>
-    <ion-row>
-      <ion-col class="ion-text-center">
-  <ion-checkbox >I agree to the <a href="https://m.youtube.com/shorts/rhjBbjxQcz0" (click)="$event.stopPropagation()">terms and conditions</a></ion-checkbox>
-</ion-col>
-  </ion-row>
-  </ion-grid>
-
-
 </ion-content>
