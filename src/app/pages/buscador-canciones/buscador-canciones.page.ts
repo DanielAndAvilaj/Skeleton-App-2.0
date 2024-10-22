@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../../services/spotify.service';
+import { DbService } from '../../services/db.service';
+import { UserService } from '../../services/user.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-buscador-canciones',
@@ -10,8 +13,14 @@ export class BuscadorCancionesPage implements OnInit {
   songName: string = '';
   trackResults: any = [];
   playingTrack: any = null;
+  userId: number | null = null;
 
-  constructor(private spotifyService: SpotifyService) {}
+  constructor(
+    private spotifyService: SpotifyService,
+    private dbService: DbService,
+    private userService: UserService,
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
     this.spotifyService.authenticate().subscribe(
@@ -23,6 +32,14 @@ export class BuscadorCancionesPage implements OnInit {
         console.error('Error al obtener el token de acceso:', error);
       }
     );
+
+    // Obtener el ID del usuario logueado desde el UserService
+    this.userService.getUserIdFromStorage().then((id) => {
+      this.userId = id;
+      console.log('User ID obtenido en ngOnInit:', this.userId); // Verificar si se obtiene el userId
+    }).catch((error) => {
+      console.error('Error al obtener el User ID:', error);
+    });
   }
 
   searchSong() {
@@ -57,5 +74,44 @@ export class BuscadorCancionesPage implements OnInit {
 
   stopPlaying() {
     this.playingTrack = null; // Vuelve a la lista de canciones
+  }
+
+  // Añadir una canción a la lista de favoritos del usuario
+  addToFavorites(track: any) {
+    console.log('addToFavorites llamado para track:', track.name); // Verificar que se llama la función
+
+    if (this.userId) { // Verificar que el userId no sea null
+      console.log('User ID encontrado:', this.userId); // Confirmar el ID del usuario antes de añadir favorito
+      this.dbService.addFavorite(
+        this.userId,
+        track.name,
+        track.artists[0]?.name,
+        track.album.name,
+        track.id
+      ).then(async () => {
+        const alert = await this.alertController.create({
+          header: 'Añadido a Favoritos',
+          message: `La canción "${track.name}" ha sido añadida a tus favoritos.`,
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }).catch((error) => {
+        console.error('Error al añadir a favoritos:', error);
+      });
+    } else {
+      console.error('No se pudo añadir a favoritos: el userId es null.');
+      this.presentAlert('Error', 'No se ha podido añadir la canción a favoritos porque el usuario no está logueado.');
+    }
+  }
+
+  // Función auxiliar para mostrar alertas
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 }

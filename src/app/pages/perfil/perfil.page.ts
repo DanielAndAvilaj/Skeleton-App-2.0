@@ -1,30 +1,38 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { Component, OnInit } from '@angular/core';
+import { DbService } from '../../services/db.service'; // Asegúrate de tener el servicio de base de datos
 
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.page.html',
   styleUrls: ['./perfil.page.scss'],
 })
-export class PerfilPage {
+export class PerfilPage implements OnInit {
   userEmail: string = '';
   userPassword: string = '';
-  userAge: number = 0;
+  userAge: number | null = null;
   userPhone: string = '';
 
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private dbService: DbService) {}
 
-  ionViewWillEnter() {
-    // Obtener los datos del usuario y mostrarlos en el perfil
-    const userData = this.userService.getUserData();
-    this.userEmail = userData.email;
-    this.userPassword = userData.password;
-    this.userAge = userData.age;
-    this.userPhone = userData.phone;
+  ngOnInit() {
+    this.loadUserData(); // Cargar los datos del usuario al iniciar la página
+  }
+
+  loadUserData() {
+    this.dbService.getUsers().then(users => {
+      if (users.length > 0) {
+        const user = users[0]; // Asumimos que sólo hay un usuario o tomamos el primero
+        this.userEmail = user.email;
+        this.userPassword = user.password;
+        this.userAge = user.age;
+        this.userPhone = user.phone;
+      }
+    }).catch(e => {
+      console.error('Error al cargar los datos del usuario', e);
+    });
   }
 
   goToConfig() {
-    this.router.navigate(['/configuracion']);
+    // Navegación a la página de configuración si es necesario
   }
 }

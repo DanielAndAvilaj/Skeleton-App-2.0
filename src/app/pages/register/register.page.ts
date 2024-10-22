@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { DbService } from '../../services/db.service'; // Importamos el servicio de la base de datos
 
 @Component({
   selector: 'app-register',
@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
 export class RegisterPage {
   registerEmail: string = '';
   registerPassword: string = '';
-  registerAge: number = 0;
+  registerAge: number | null = null; // Aseguramos que la edad sea null si no es un número
   registerPhone: string = '';
 
   emailError: boolean = false;
@@ -18,7 +18,7 @@ export class RegisterPage {
   ageError: boolean = false;
   phoneError: boolean = false;
 
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private router: Router, private dbService: DbService) {} // Inyectamos el servicio de base de datos
 
   // Validación del correo
   validateEmail() {
@@ -26,18 +26,18 @@ export class RegisterPage {
     this.emailError = !emailRegex.test(this.registerEmail);
   }
 
-  // Validación de la contraseña (mínimo 1 mayúscula, 1 número, y 8 caracteres)
+  // Validación de la contraseña
   validatePassword() {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     this.passwordError = !passwordRegex.test(this.registerPassword);
   }
 
-  // Validación de la edad (debe estar entre 10 y 100)
+  // Validación de la edad
   validateAge() {
-    this.ageError = this.registerAge < 10 || this.registerAge > 100;
+    this.ageError = this.registerAge === null || this.registerAge < 10 || this.registerAge > 100;
   }
 
-  // Validación del teléfono (formato +569 seguido de 8 dígitos)
+  // Validación del teléfono
   validatePhone() {
     const phoneRegex = /^\+569\d{8}$/;
     this.phoneError = !phoneRegex.test(this.registerPhone);
@@ -52,12 +52,23 @@ export class RegisterPage {
     this.validatePhone();
 
     if (!this.emailError && !this.passwordError && !this.ageError && !this.phoneError) {
-      // Si las validaciones son correctas, guardamos los datos del usuario
-      this.userService.setUserData(this.registerEmail, this.registerPassword, this.registerAge, this.registerPhone);
-      console.log('Usuario registrado correctamente');
+      // Verificar los datos que se enviarán
+      console.log('Datos antes de insertar el usuario:', {
+        email: this.registerEmail,
+        password: this.registerPassword,
+        age: this.registerAge,
+        phone: this.registerPhone,
+      });
 
-      // Redirigir a la página de inicio
-      this.router.navigate(['/inicio']);
+      // Si no hay errores, proceder con el registro en la base de datos
+      this.dbService.addUser(this.registerEmail, this.registerPassword, this.registerAge || 0, this.registerPhone) // Aseguramos que age no sea null
+        .then(() => {
+          console.log('Usuario registrado en la base de datos');
+          this.router.navigate(['/inicio']); // Redirigir a la página de inicio
+        })
+        .catch(e => {
+          console.log('Error al registrar el usuario en la base de datos', e);
+        });
     } else {
       console.log('Errores en el formulario de registro');
     }

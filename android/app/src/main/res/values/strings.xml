@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">skeleton-App</string>
+    <string name="title_activity_main">skeleton-App</string>
+    <string name="package_name">com.skeleton.app</string>
+    <string name="custom_url_scheme">com.skeleton.app</string>
+</resources>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../services/user.service'; // Asegúrate de que este servicio esté configurado correctamente
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,10 +18,12 @@ export class ConfiguracionPage {
   ionViewWillEnter() {
     // Obtener los datos del usuario y mostrarlos en la configuración
     const userData = this.userService.getUserData();
-    this.userEmail = userData.email;
-    this.userPassword = userData.password;
-    this.userAge = userData.age;
-    this.userPhone = userData.phone;
+    if (userData) {
+      this.userEmail = userData.email || '';
+      this.userPassword = userData.password || '';
+      this.userAge = userData.age || 0;
+      this.userPhone = userData.phone || '';
+    }
   }
 
   logout() {
