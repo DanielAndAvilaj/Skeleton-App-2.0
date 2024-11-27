@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Clase</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Sección del video -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Video Tutorial</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/embed/7uBGQrim6ts"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Sección del quiz -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Quiz de la Clase</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="submitQuiz()">
+        <div *ngFor="let question of questions; let i = index">
+          <ion-item lines="none">
+            <ion-label class="question">{{ question.question }}</ion-label>
+          </ion-item>
+          <ion-radio-group [(ngModel)]="question.selected" [name]="'question' + i">
+            <ion-item
+              *ngFor="let option of question.options; let j = index"
+              [color]="option.color">
+              <ion-label>{{ option.text }}</ion-label>
+              <ion-radio slot="start" [value]="j"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </div>
+        <div class="ion-text-center">
+          <ion-button expand="block" type="submit" color="success">Enviar Quiz</ion-button>
+          <ion-button expand="block" type="button" color="medium" (click)="resetQuiz()">Reiniciar Quiz</ion-button>
+        </div>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<style>
+  .video-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 56.25%; /* Relación de aspecto 16:9 */
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .question {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+</style>

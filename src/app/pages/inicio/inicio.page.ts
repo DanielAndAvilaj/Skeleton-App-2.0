@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
+
 interface Question {
   question: string;
   options: string[];
@@ -265,6 +266,8 @@ export class InicioPage implements OnInit {
       this.loginEdad = edad;
       this.loginTelefono = telefono;
     }
+      console.log(Image)
+
 
     console.log('-----Datos del usuario------');
     console.log('Usuario: ' + this.loginUsuario);
@@ -354,10 +357,15 @@ export class InicioPage implements OnInit {
     });
   }
 
+  irAClase() {
+    this.router.navigate(['/clase']);
+  }
+
   startQuiz() {
     this.quizStarted = true;
     this.startTimer();
   }
+
 
   endQuiz() {
     this.quizFinished = true;

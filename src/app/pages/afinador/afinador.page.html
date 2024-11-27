@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Afinador</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="tuner ion-text-center">
+    <h1 class="note ion-text-uppercase">{{ detectedNote }}</h1>
+    <p>Frecuencia: {{ frequency | number: '1.2-2' }} Hz</p>
+    <p class="message">{{ message }}</p>
+
+    <ion-button
+      (click)="startTuning()"
+      expand="block"
+      color="success"
+      [disabled]="tuning"
+    >
+      Iniciar Afinador
+    </ion-button>
+
+    <ion-button
+      (click)="stopTuning()"
+      expand="block"
+      color="danger"
+      [disabled]="!tuning"
+    >
+      Detener Afinador
+    </ion-button>
+  </div>
+</ion-content>
+
+<style>
+  .tuner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .note {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  .message {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+  }
+</style>

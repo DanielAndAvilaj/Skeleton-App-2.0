@@ -43,11 +43,22 @@ const routes: Routes = [
     path: 'favoritos',
     loadChildren: () => import('./pages/favoritos/favoritos.module').then( m => m.FavoritosPageModule)
   },
+  {
+    path: 'clase',
+    loadChildren: () => import('./pages/clase/clase.module').then( m => m.ClasePageModule)
+  },
+  {
+    path: 'afinador',
+    loadChildren: () => import('./pages/afinador/afinador.module').then( m => m.AfinadorPageModule)
+  },
   // Ruta comodín para redirigir a la página de error 404
   {
     path: '**',
     loadChildren: () => import('./pages/error404/error404.module').then(m => m.Error404PageModule)
   }
+  
+
+
 
 ];
 
